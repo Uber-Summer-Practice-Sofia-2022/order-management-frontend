@@ -49,7 +49,7 @@ export default function MenuItemTable(props) {
 
   return (
     <TableContainer>
-      <Table striped bordered hover variant="dark">
+      <Table striped bordered variant='dark'>
         <thead>
           <tr style={{
             backgroundColor: 'black',

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button, FloatingLabel, Form,
 } from 'react-bootstrap';
 
 export default function OrderForm({ values, setValues, onSubmit }) {
+  const [isHovering, setIsHovering] = useState(false);
   const handleNameChange = (event) => setValues({
     ...values,
     CustomerName: event.target.value,
@@ -29,6 +30,14 @@ export default function OrderForm({ values, setValues, onSubmit }) {
     ...values,
     Cutlery: event.target.value,
   });
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+  };
 
   return (
     <Form onSubmit={(e) => {
@@ -92,6 +101,9 @@ export default function OrderForm({ values, setValues, onSubmit }) {
       <Button
         variant="primary"
         type="submit"
+        style={{backgroundColor: isHovering ? 'white' : 'black', color: isHovering ? 'black' : 'white', border:'1px solid black'}}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         Submit Order
       </Button>
