@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { func } from 'prop-types';
 import { Container, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Redirect, useNavigate } from 'react-router-dom';
 
 function TableContainer(props) {
   return (
@@ -23,6 +23,7 @@ TableContainer.propTypes = {
 };
 
 export default function RestaurantTable(props) {
+  const navigate = useNavigate();
   if (props.restaurantsData.length === 0) {
     return (
       <TableContainer>
@@ -30,6 +31,10 @@ export default function RestaurantTable(props) {
       </TableContainer>
     );
   }
+
+  const handleOnClick = (restaurant_id) => (
+    navigate(`restaurant/${restaurant_id}`)
+  );
 
   return (
     <TableContainer>
@@ -58,7 +63,7 @@ export default function RestaurantTable(props) {
             opening,
             restaurant_id,
           }) => (
-            <tr key={restaurant_id}>
+            <tr style={{cursor:"pointer"}} onClick={() => handleOnClick(restaurant_id)} key={restaurant_id}>
               <td>
                 {restaurant_id}
               </td>
@@ -67,20 +72,6 @@ export default function RestaurantTable(props) {
               <td align="right">{opening}</td>
               <td align="right">{closing}</td>
               <td align="right">{delivery_price}</td>
-              <td align="center">
-                <Link to={`/restaurant/${restaurant_id}`}>
-                  <button style={{
-                    backgroundColor: 'black',
-                    color: 'white',
-                    fontFamily: 'futura',
-                    borderRadius: '10px',
-
-                  }}
-                  >
-                    Order
-                  </button>
-                </Link>
-              </td>
             </tr>
           ))}
         </tbody>
@@ -88,7 +79,6 @@ export default function RestaurantTable(props) {
     </TableContainer>
   );
 }
-
 RestaurantTable.propTypes = {
   restaurantsData: PropTypes.array,
 };

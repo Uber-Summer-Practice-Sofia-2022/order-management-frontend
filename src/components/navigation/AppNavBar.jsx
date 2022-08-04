@@ -31,8 +31,6 @@ export default function AppNavBar() {
           </Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link as="div"><MenuLink className="navlink" to="/">Home</MenuLink></Nav.Link>
-            <Nav.Link as="div"><MenuLink className="navlink" to="/planets">Planets</MenuLink></Nav.Link>
-            <Nav.Link as="div"><MenuLink className="navlink" to="/character">Character</MenuLink></Nav.Link>
             <Nav.Link as="div"><MenuLink className="navlink" to="/orders">Orders</MenuLink></Nav.Link>
             <Nav.Link as="div"><MenuLink className="navlink" to="/order/status">Order Status</MenuLink></Nav.Link>
           </Nav>

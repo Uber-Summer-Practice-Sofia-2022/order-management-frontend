@@ -81,7 +81,7 @@ export default function MenuPage() {
     return requestBody;
   }
 
-  const onFormSubmit = async () =>  {
+  const onFormSubmit = async () => {
     setValues(formatJSONPayload(menuData, values));
     const postResponse = await postData(`http://localhost:5000/restaurant/${restaurantID}/order`, JSON.stringify(values));
     navigate("/order/" + postResponse['ID'] + "/status");
