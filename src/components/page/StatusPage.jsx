@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import LoadingContainer from '../common/LoadingContainer';
 import OrderDataTable from '../OrderDataTable';
 import CancelModal from '../CancelModal';
@@ -76,34 +76,68 @@ export default function StatusPage() {
     disabled = true;
     orderData[0].Status = 'Cancelled';
   };
+
   if (orderData.length > 0) {
     disabled = orderData[0].Status !== 'Open';
   }
-  return (
-    <>
-      <Container style={{
-        paddingBottom: '10px',
-        paddingTop: '10px',
-      }}
-      >
-        <h1 id="orderStatus">Your order was successful</h1>
-        <h2>Your order details: </h2>
-        {dataLoading
-          ? (<LoadingContainer />) : (<OrderDataTable orderData={orderData} />)}
-        <button
-          id="button"
-          style={{
-            backgroundColor: 'white', marginLeft: '44%', marginTop: '50px', height: '50px', width: '150px', borderRadius: '5px', filter: 'drop-shadow(1px 1px 10px grey)',
-          }}
-          disabled={disabled}
-          type="button"
-          onClick={onFormSubmit}
+  if(disabled)
+  {
+    return (
+      <>
+        <Container style={{
+          paddingBottom: '10px',
+          paddingTop: '10px',
+        }}
         >
-          Cancel
-        </button>
-      </Container>
-      <CancelModal visible={showCancelModal} onClose={onModalClose} />
-
-    </>
-  );
+          <h1 id="orderStatus">Your order was cancelled</h1>
+          <h2>Your order details: </h2>
+          {dataLoading
+            ? (<LoadingContainer />) : (<OrderDataTable orderData={orderData} />)}
+          <button
+            id="button"
+            style={{
+              backgroundColor: 'white', marginLeft: '44%', marginTop: '50px', height: '50px', width: '150px', borderRadius: '5px', filter: 'drop-shadow(1px 1px 10px grey)',
+            }}
+            disabled={disabled}
+            type="button"
+            onClick={onFormSubmit}
+          >
+            Cancel
+          </button>
+        </Container>
+        <CancelModal visible={showCancelModal} onClose={onModalClose} />
+  
+      </>
+    );
+  }
+  else
+  {
+    return (
+      <>
+        <Container style={{
+          paddingBottom: '10px',
+          paddingTop: '10px',
+        }}
+        >
+          <h1 id="orderStatus">Your order was successful</h1>
+          <h2>Your order details: </h2>
+          {dataLoading
+            ? (<LoadingContainer />) : (<OrderDataTable orderData={orderData} />)}
+          <button
+            id="button"
+            style={{
+              backgroundColor: 'white', marginLeft: '44%', marginTop: '50px', height: '50px', width: '150px', borderRadius: '5px', filter: 'drop-shadow(1px 1px 10px grey)',
+            }}
+            disabled={disabled}
+            type="button"
+            onClick={onFormSubmit}
+          >
+            Cancel
+          </button>
+        </Container>
+        <CancelModal visible={showCancelModal} onClose={onModalClose} />
+  
+      </>
+    );
+  }
 }
