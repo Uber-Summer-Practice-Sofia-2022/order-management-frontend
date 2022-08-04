@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
 import LoadingContainer from '../common/LoadingContainer';
@@ -13,7 +13,7 @@ export default function StatusPage() {
   const navigate = useNavigate();
   const { orderId } = useParams();
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setDataLoading(true);
     const orderDataReceived = await fetch(`${ORDERAPI_URL}/order/${orderId}`);
     const orderDataStatus = orderDataReceived.status;
@@ -21,7 +21,7 @@ export default function StatusPage() {
     const orderDataJSON = await orderDataReceived.json();
     setOrderData(orderDataJSON.Order);
     setDataLoading(false);
-  };
+  }, [orderId]);
 
   async function putData(url = '', data = {}) {
     const response = await fetch(url, {
@@ -41,7 +41,7 @@ export default function StatusPage() {
   let postResponse;
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   if (dataRequestStatus !== 200) {
     return (<p>Something went wrong with your request.</p>);
