@@ -12,6 +12,7 @@ export default function StatusPage() {
   const [dataLoading, setDataLoading] = useState([false]);
   const [dataRequestStatus, setDataRequestStatus] = useState(200);
   const [showCancelModal, toggleCancelModal] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const { orderId } = useParams();
 
   const fetchData = async () => {
@@ -46,6 +47,14 @@ export default function StatusPage() {
 
   const onModalClose = () => {
     toggleCancelModal(false);
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
   };
 
   if (dataRequestStatus !== 200) {
@@ -124,10 +133,12 @@ export default function StatusPage() {
         <button
           id="button"
           style={{
-            backgroundColor: 'white', marginLeft: '44%', marginTop: '50px', height: '50px', width: '150px', borderRadius: '5px', filter: 'drop-shadow(1px 1px 10px grey)',
+            backgroundColor: isHovering ? 'white' : 'black', color: isHovering ? 'black' : 'white', marginLeft: '44%', marginTop: '50px', height: '50px', width: '150px', borderRadius: '5px', filter: 'drop-shadow(1px 1px 10px grey)',
           }}
           disabled={disabled}
           type="button"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
           onClick={onFormSubmit}
         >
           Cancel
