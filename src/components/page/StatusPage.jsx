@@ -12,6 +12,7 @@ export default function StatusPage() {
   const [dataLoading, setDataLoading] = useState([false]);
   const [dataRequestStatus, setDataRequestStatus] = useState(200);
   const [showCancelModal, toggleCancelModal] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const { orderId } = useParams();
 
   const fetchData = useCallback(async () => {
@@ -48,6 +49,14 @@ export default function StatusPage() {
     toggleCancelModal(false);
   };
 
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+  };
+
   if (dataRequestStatus !== 200) {
     return (
       <>
@@ -72,7 +81,7 @@ export default function StatusPage() {
   const onFormSubmit = async () => {
     postResponse = await putData(`http://localhost:5000/order/${order_id}/status`, JSON.stringify({ status: 'Cancelled' }));
     toggleCancelModal(true);
-    document.getElementById("orderStatus").innerHTML = "Your order was cancelled";
+    document.getElementById('orderStatus').innerHTML = 'Your order was cancelled';
     disabled = true;
     orderData[0].Status = 'Cancelled';
   };
@@ -80,8 +89,7 @@ export default function StatusPage() {
   if (orderData.length > 0) {
     disabled = orderData[0].Status !== 'Open';
   }
-  if(disabled)
-  {
+  if (disabled) {
     return (
       <>
         <Container style={{
@@ -106,38 +114,38 @@ export default function StatusPage() {
           </button>
         </Container>
         <CancelModal visible={showCancelModal} onClose={onModalClose} />
-  
+
       </>
     );
   }
-  else
-  {
-    return (
-      <>
-        <Container style={{
-          paddingBottom: '10px',
-          paddingTop: '10px',
-        }}
+
+  return (
+    <>
+      <Container style={{
+        paddingBottom: '10px',
+        paddingTop: '10px',
+      }}
+      >
+        <h1 id="orderStatus">Your order was successful</h1>
+        <h2>Your order details: </h2>
+        {dataLoading
+          ? (<LoadingContainer />) : (<OrderDataTable orderData={orderData} />)}
+        <button
+          id="button"
+          style={{
+            backgroundColor: isHovering ? 'white' : 'black', color: isHovering ? 'black' : 'white', marginLeft: '44%', marginTop: '50px', height: '50px', width: '150px', borderRadius: '5px', filter: 'drop-shadow(1px 1px 10px grey)',
+          }}
+          disabled={disabled}
+          type="button"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={onFormSubmit}
         >
-          <h1 id="orderStatus">Your order was successful</h1>
-          <h2>Your order details: </h2>
-          {dataLoading
-            ? (<LoadingContainer />) : (<OrderDataTable orderData={orderData} />)}
-          <button
-            id="button"
-            style={{
-              backgroundColor: 'white', marginLeft: '44%', marginTop: '50px', height: '50px', width: '150px', borderRadius: '5px', filter: 'drop-shadow(1px 1px 10px grey)',
-            }}
-            disabled={disabled}
-            type="button"
-            onClick={onFormSubmit}
-          >
-            Cancel
-          </button>
-        </Container>
-        <CancelModal visible={showCancelModal} onClose={onModalClose} />
-  
-      </>
-    );
-  }
+          Cancel
+        </button>
+      </Container>
+      <CancelModal visible={showCancelModal} onClose={onModalClose} />
+
+    </>
+  );
 }
