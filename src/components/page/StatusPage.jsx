@@ -7,8 +7,29 @@ import CancelModal from '../CancelModal';
 
 const ORDERAPI_URL = 'http://127.0.0.1:5000/';
 
+const disabledCancelButtonStyle = {
+  backgroundColor: 'white',
+  marginLeft: '44%',
+  marginTop: '50px',
+  height: '50px',
+  width: '150px',
+  borderRadius: '5px',
+  filter: 'drop-shadow(1px 1px 10px grey)',
+};
+
+const enabledCancelButtonStyle = (isHovering) => ({
+  backgroundColor: isHovering ? 'white' : 'black',
+  color: isHovering ? 'black' : 'white',
+  marginLeft: '44%',
+  marginTop: '50px',
+  height: '50px',
+  width: '150px',
+  borderRadius: '5px',
+  filter: 'drop-shadow(1px 1px 10px grey)',
+});
+
 export default function StatusPage() {
-  const [orderData, setOrderData] = useState([]);
+  const [orderInfo, setOrderInfo] = useState({});
   const [dataLoading, setDataLoading] = useState([false]);
   const [dataRequestStatus, setDataRequestStatus] = useState(200);
   const [showCancelModal, toggleCancelModal] = useState(false);
@@ -21,7 +42,7 @@ export default function StatusPage() {
     const orderDataStatus = orderDataReceived.status;
     setDataRequestStatus(orderDataStatus);
     const orderDataJSON = await orderDataReceived.json();
-    setOrderData(orderDataJSON.Order);
+    setOrderInfo(orderDataJSON.Order[0]);
     setDataLoading(false);
   }, [orderId]);
 
@@ -40,7 +61,6 @@ export default function StatusPage() {
     return response.json();
   }
 
-  let postResponse;
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -57,16 +77,16 @@ export default function StatusPage() {
     setIsHovering(false);
   };
 
-  if (dataRequestStatus !== 200) {
+  if (dataRequestStatus === 404) {
     return (
       <>
-        <h1 style={{ textAlign: 'center', marginTop: '20%' }}>Something went wrong with your request.</h1>
+        <h1 style={{ textAlign: 'center', marginTop: '20%' }}>Order not found</h1>
         <Link to="/">
           <button
-            style={{
-              backgroundColor: 'white', marginLeft: '44%', marginTop: '50px', height: '50px', width: '150px', borderRadius: '5px', filter: 'drop-shadow(1px 1px 10px grey)',
-            }}
+            style={enabledCancelButtonStyle(isHovering)}
             type="button"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           >
             Home
           </button>
@@ -76,48 +96,25 @@ export default function StatusPage() {
     );
   }
 
-  const order_id = orderId;
   let disabled = true;
   const onFormSubmit = async () => {
-    postResponse = await putData(`http://localhost:5000/order/${order_id}/status`, JSON.stringify({ status: 'Cancelled' }));
+    console.log('ORDER ID ', orderId);
+    await putData(`http://localhost:5000/order/${orderId}/status`, JSON.stringify({ status: 'Cancelled' }));
     toggleCancelModal(true);
     document.getElementById('orderStatus').innerHTML = 'Your order was cancelled';
     disabled = true;
-    orderData[0].Status = 'Cancelled';
+    setOrderInfo({
+      ...orderInfo,
+      Status: 'Cancelled',
+    });
+    // orderInfo.Status = 'Cancelled';
   };
 
-  if (orderData.length > 0) {
-    disabled = orderData[0].Status !== 'Open';
+  if (orderInfo) {
+    disabled = orderInfo.Status !== 'Open';
   }
-  if (disabled) {
-    return (
-      <>
-        <Container style={{
-          paddingBottom: '10px',
-          paddingTop: '10px',
-        }}
-        >
-          <h1 id="orderStatus">Your order was cancelled</h1>
-          <h2>Your order details: </h2>
-          {dataLoading
-            ? (<LoadingContainer />) : (<OrderDataTable orderData={orderData} />)}
-          <button
-            id="button"
-            style={{
-              backgroundColor: 'white', marginLeft: '44%', marginTop: '50px', height: '50px', width: '150px', borderRadius: '5px', filter: 'drop-shadow(1px 1px 10px grey)',
-            }}
-            disabled={disabled}
-            type="button"
-            onClick={onFormSubmit}
-          >
-            Cancel
-          </button>
-        </Container>
-        <CancelModal visible={showCancelModal} onClose={onModalClose} />
 
-      </>
-    );
-  }
+  console.log('Order data ', orderInfo);
 
   return (
     <>
@@ -126,15 +123,22 @@ export default function StatusPage() {
         paddingTop: '10px',
       }}
       >
-        <h1 id="orderStatus">Your order was successful</h1>
+        <h1 id="orderStatus">
+          Your order was
+          {' '}
+          {orderInfo.Status === 'Cancelled' ? 'cancelled' : 'successful'}
+        </h1>
+        <h2>
+          Order status:
+          {' '}
+          <i>{orderInfo.Status}</i>
+        </h2>
         <h2>Your order details: </h2>
         {dataLoading
-          ? (<LoadingContainer />) : (<OrderDataTable orderData={orderData} />)}
+          ? (<LoadingContainer />) : (<OrderDataTable orderData={orderInfo} />)}
         <button
           id="button"
-          style={{
-            backgroundColor: isHovering ? 'white' : 'black', color: isHovering ? 'black' : 'white', marginLeft: '44%', marginTop: '50px', height: '50px', width: '150px', borderRadius: '5px', filter: 'drop-shadow(1px 1px 10px grey)',
-          }}
+          style={disabled ? disabledCancelButtonStyle : enabledCancelButtonStyle(isHovering)}
           disabled={disabled}
           type="button"
           onMouseEnter={handleMouseEnter}

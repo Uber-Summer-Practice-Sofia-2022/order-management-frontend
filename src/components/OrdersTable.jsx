@@ -32,7 +32,7 @@ export default function OrdersTable(props) {
 
   return (
     <TableContainer>
-      <Table striped bordered hover>
+      <Table striped bordered variant='dark'>
         <thead>
           <tr style={{
             backgroundColor: 'black',
