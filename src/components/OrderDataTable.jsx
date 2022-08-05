@@ -22,7 +22,9 @@ TableContainer.propTypes = {
 };
 
 export default function OrderDataTable(props) {
-  if (props.orderData.length === 0) {
+  const { orderData } = props;
+
+  if (orderData.length === 0) {
     return (
       <TableContainer>
         <p>No data</p>
@@ -46,39 +48,24 @@ export default function OrderDataTable(props) {
             <th align="right">Delivery Price</th>
             <th align="right">Phone Number</th>
             <th align="right">Customer Name</th>
-            <th align="right">Status</th>
             <th align="right">Restaurant Name</th>
             <th align="right">Restaurant Address</th>
           </tr>
         </thead>
         <tbody>
-          {props.orderData.map(({
-            ID,
-            CreatedAt,
-            DeliveryAddress,
-            TotalPrice,
-            DeliveryPrice,
-            PhoneNumber,
-            CustomerName,
-            Status,
-            RestaurantName,
-            RestaurantAddress,
-          }) => (
-            <tr key={ID}>
-              <td>
-                {ID}
-              </td>
-              <td align="right">{CreatedAt}</td>
-              <td align="right">{DeliveryAddress}</td>
-              <td align="right">{TotalPrice}</td>
-              <td align="right">{DeliveryPrice}</td>
-              <td align="right">{PhoneNumber}</td>
-              <td align="right">{CustomerName}</td>
-              <td align="right">{Status}</td>
-              <td align="right">{RestaurantName}</td>
-              <td align="right">{RestaurantAddress}</td>
-            </tr>
-          ))}
+          <tr key={orderData.ID}>
+            <td>
+              {orderData.ID}
+            </td>
+            <td align="right">{orderData.CreatedAt}</td>
+            <td align="right">{orderData.DeliveryAddress}</td>
+            <td align="right">{orderData.TotalPrice}</td>
+            <td align="right">{orderData.DeliveryPrice}</td>
+            <td align="right">{orderData.PhoneNumber}</td>
+            <td align="right">{orderData.CustomerName}</td>
+            <td align="right">{orderData.RestaurantName}</td>
+            <td align="right">{orderData.RestaurantAddress}</td>
+          </tr>
         </tbody>
       </Table>
     </TableContainer>
@@ -86,5 +73,5 @@ export default function OrderDataTable(props) {
 }
 
 OrderDataTable.propTypes = {
-  orderData: PropTypes.array,
+  orderData: PropTypes.object,
 };
